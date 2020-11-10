@@ -1,15 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-3.0.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
+
     <bean id="myCat"
-          class="IoC.Cat">
+          class="com.IoC.Cat">
     </bean>
 
     <bean id="myDog"
-          class="IoC.Dog">
+          class="com.IoC.Dog">
         <constructor-arg value="Rex"/>
     </bean>
+
+    <bean id="prototypeTask"
+          class="com.beanscopes.Task"
+          scope="prototype"
+          init-method="performInitialization">
+    </bean>
+
+    <bean id="singletonTask"
+        class="com.beanscopes.Task"
+          init-method="performInitialization"
+        destroy-method="performDestruction">
+    </bean>
+
+    <bean id="myAspect"
+          class="com.beanscopes.MyAspect">
+    </bean>
+
+    <aop:config>
+        <aop:aspect id="myaspect" ref="myAspect" >
+            <!-- @Before -->
+            <aop:pointcut id="pointCutBefore"   expression="execution(* run()))" />
+            <aop:before method="beforeCall" pointcut-ref="pointCutBefore" />
+        </aop:aspect>
+    </aop:config>
+
+    <context:component-scan base-package="com" />
 </beans>
